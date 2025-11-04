@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AtmoSense - Advanced Weather Monitoring System</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        :root {
+            --primary-bg: #f8fafc;
+            --emerald: #10b981;
+            --sky-blue: #0ea5e9;
+            --cold-blue: #3b82f6;
+            --normal-orange: #f97316;
+            --hot-red: #ef4444;
+        }
+        
+        body {
+            background-color: var(--primary-bg);
+            overflow-x: hidden;
+        }
+        
+        /* Neumorphism Effects */
+        .neu-card {
+            background: var(--primary-bg);
+            border-radius: 20px;
+            box-shadow: 
+                20px 20px 40px rgba(209, 213, 219, 0.6),
+                -20px -20px 40px rgba(255, 255, 255, 0.8);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .neu-card:hover {
+            transform: translateY(-8px) rotateX(5deg);
+            box-shadow: 
+                25px 25px 50px rgba(209, 213, 219, 0.7),
+                -25px -25px 50px rgba(255, 255, 255, 0.9);
+        }
+        
+        .neu-button {
+            background: var(--primary-bg);
+            border-radius: 15px;
+            box-shadow: 
+                8px 8px 16px rgba(209, 213, 219, 0.6),
+                -8px -8px 16px rgba(255, 255, 255, 0.8);
+            transition: all 0.2s ease;
+        }
+        
+        .neu-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                10px 10px 20px rgba(209, 213, 219, 0.7),
+                -10px -10px 20px rgba(255, 255, 255, 0.9);
+        }
+        
+        .neu-button:active {
+            transform: translateY(1px);
+            box-shadow: 
+                4px 4px 8px rgba(209, 213, 219, 0.8),
+                -4px -4px 8px rgba(255, 255, 255, 0.7);
+        }
+        
+        /* Glassmorphism Effects */
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+        }
+        
+        .glass-navbar {
+            background: rgba(248, 250, 252, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Enhanced Parallax Hero Section */
+        .hero-container {
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 120%;
+            object-fit: cover;
+            z-index: 1;
+            will-change: transform;
+        }
+        
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, 
+                rgba(16, 185, 129, 0.3) 0%, 
+                rgba(14, 165, 233, 0.3) 50%,
+                rgba(16, 185, 129, 0.2) 100%);
+            z-index: 2;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .parallax-section {
+            position: relative;
+            z-index: 4;
+            background: var(--primary-bg);
+            border-radius: 50px 50px 0 0;
+            margin-top: -50px;
+            padding-top: 50px;
+        }
+        
+        /* Animations */
+        @keyframes countUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeInUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(50px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes shimmer {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        @keyframes droplet {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(8px); }
+        }
+        
+        @keyframes windBlow {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(3px); }
+            75% { transform: translateX(-3px); }
+        }
+        
+        .animate-shimmer {
+            animation: shimmer 2s ease-in-out infinite;
+        }
+        
+        .animate-droplet {
+            animation: droplet 3s ease-in-out infinite;
+        }
+        
+        .animate-wind {
+            animation: windBlow 2.5s ease-in-out infinite;
+        }
+        
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
+        }
+        
+        /* Temperature Color Classes */
+        .temp-cold { color: var(--cold-blue); }
+        .temp-normal { color: var(--normal-orange); }
+        .temp-hot { color: var(--hot-red); }
+        
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Custom Logo Styles - Centered */
+        .logo-container {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo-svg {
+            width: 40px;
+            height: 40px;
+            filter: drop-shadow(0 4px 8px rgba(16, 185, 129, 0.3));
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .neu-card {
+                border-radius: 15px;
+                box-shadow: 
+                    15px 15px 30px rgba(209, 213, 219, 0.5),
+                    -15px -15px 30px rgba(255, 255, 255, 0.7);
+            }
+            
+            .hero-video {
+                height: 100%;
+            }
+            
+            .parallax-section {
+                border-radius: 30px 30px 0 0;
+                margin-top: -30px;
+                padding-top: 30px;
+            }
+        }
+        
+        /* Section spacing */
+        .section-spacing {
+            padding-top: 5rem;
+            padding-bottom: 5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .section-spacing {
+                padding-top: 3rem;
+                padding-bottom: 3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sticky Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 glass-navbar">
+        <div class="container mx-auto px-6 py-4 relative">
+            <div class="flex items-center justify-between">
+                <div class="text-lg font-semibold text-gray-800">Dev Manojkumar Ray</div>
+                
+                <!-- Centered AtmoSense Logo -->
+                <div class="logo-container">
+                    <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Cloud Base -->
+                        <path d="M25 60 C15 60, 10 50, 15 45 C15 35, 25 30, 35 35 C40 25, 55 25, 60 35 C70 30, 80 35, 80 45 C85 50, 80 60, 70 60 Z" 
+                              fill="url(#cloudGradient)" stroke="none"/>
+                        
+                        <!-- Circuit Pattern -->
+                        <g stroke="#10b981" stroke-width="2" fill="none">
+                            <path d="M30 45 L40 45 M45 40 L45 50 M50 45 L65 45"/>
+                            <circle cx="40" cy="45" r="2" fill="#10b981"/>
+                            <circle cx="50" cy="45" r="2" fill="#0ea5e9"/>
+                            <circle cx="65" cy="45" r="2" fill="#10b981"/>
+                        </g>
+                        
+                        <!-- Digital Heartbeat -->
+                        <path d="M20 70 L25 70 L30 55 L35 75 L40 60 L45 70 L80 70" 
+                              stroke="#0ea5e9" stroke-width="3" fill="none"/>
+                        
+                        <!-- Gradient Definitions -->
+                        <defs>
+                            <linearGradient id="cloudGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#e0f2fe;stop-opacity:0.8" />
+                                <stop offset="100%" style="stop-color:#f0fdf4;stop-opacity:0.8" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <span class="text-xl font-bold bg-gradient-to-b from-emerald-500 to-sky-500 bg-clip-text text-transparent">
+                        AtmoSense
+                    </span>
+                </div>
+                
+                <div class="text-lg font-semibold text-gray-800">Ruchi Tandel</div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Enhanced Hero Section with Video and Parallax -->
+    <section id="hero" class="hero-container">
+        <!-- Background Video -->
+        <video class="hero-video" autoplay muted loop playsinline>
+            <source src="weather.mp4" type="video/mp4">
+            <!-- Fallback gradient background if video fails -->
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-400 via-purple-500 to-emerald-400"></div>
+        </video>
+        
+        <!-- Overlay -->
+        <div class="hero-overlay"></div>
+        
+        <!-- Content -->
+        <div class="hero-content">
+            <div class="container mx-auto px-6 text-center">
+                <div class="glass max-w-4xl mx-auto p-8 md:p-12">
+                    <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
+                        Advanced Weather
+                        <span class="bg-gradient-to-b from-emerald-400 to-sky-400 bg-clip-text text-transparent">
+                            Monitoring
+                        </span>
+                    </h1>
+                    <p class="text-lg md:text-xl text-white/90 mb-8 max-w-2xl mx-auto leading-relaxed">
+                        Experience the future of atmospheric monitoring with AtmoSense. Our cutting-edge technology provides 
+                        real-time, hyperlocal weather data with unprecedented accuracy and beautiful visualizations.
+                    </p>
+                    <button class="neu-button px-8 py-4 text-lg font-semibold text-gray-800 hover:text-emerald-600 transition-colors">
+                        Explore Weather Data
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Parallax Transition Section -->
+    <div class="parallax-section">
+        <!-- Live Statistics Section -->
+        <section id="stats" class="section-spacing bg-gray-50">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-12">Real-Time Environmental Monitoring</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                    <!-- Temperature Card -->
+                    <div class="neu-card p-8 text-center group">
+                        <div class="mb-4">
+                            <i data-lucide="thermometer" class="w-12 h-12 mx-auto text-orange-500 animate-shimmer"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-2">Temperature</h3>
+                        <div class="text-5xl font-bold mb-2">
+                            <span id="temp-value" class="temp-normal">--</span><span class="text-gray-500">°C</span>
+                        </div>
+                        <p class="text-gray-500">Real-time ambient temperature with precision sensors</p>
+                    </div>
+
+
+
+
+
+                    <!-- Humidity Card -->
+                    <div class="neu-card p-8 text-center group">
+                        <div class="mb-4">
+                            <i data-lucide="droplets" class="w-12 h-12 mx-auto text-blue-500 animate-droplet"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-2">Humidity</h3>
+                        <div class="text-5xl font-bold text-sky-500 mb-2">
+                            <span id="humidity-value">--</span><span class="text-gray-500">%</span>
+                        </div>
+                        <p class="text-gray-500">Accurate relative humidity measurements for comfort analysis</p>
+                    </div>
+
+                    <!-- Air Quality Card -->
+                    <div class="neu-card p-8 text-center group">
+                        <div class="mb-4">
+                            <i data-lucide="wind" class="w-12 h-12 mx-auto text-emerald-500 animate-wind"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-2">Air Quality</h3>
+                        <div class="text-5xl font-bold text-emerald-500 mb-2">
+                            <span id="air-quality-value">--</span><span class="text-gray-500">AQI</span>
+                        </div>
+                        <p class="text-gray-500">Comprehensive air quality index monitoring for health insights</p>
+                    </div>
+
+                    <!-- Condition Card -->
+                     <div class="md:col-span-3 flex justify-center"> 
+                        <div class="neu-card p-8 text-center group">
+                            <div class="mb-4">
+                                <i data-lucide="activity" class="w-12 h-12 mx-auto text-purple-500 animate-pulse"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-700 mb-2">Condition</h3>
+                            <div class="text-2xl font-bold text-purple-600 mb-2">
+                                <span id="condition-value">--</span>
+                            </div>
+                            <p class="text-gray-500">Overall environmental condition analysis</p>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </section>
+
+        <!-- Detailed Information Section -->
+        <section id="features" class="section-spacing">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-12">Advanced Monitoring Capabilities</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                    <!-- Feature Card 1 -->
+                    <div class="neu-card p-8 fade-in-up">
+                        <div class="flex items-center mb-4">
+                            <i data-lucide="target" class="w-8 h-8 text-emerald-500 mr-3"></i>
+                            <h3 class="text-2xl font-bold text-gray-800">Hyperlocal Precision</h3>
+                        </div>
+                        <p class="text-gray-600 leading-relaxed">
+                            Our advanced IoT sensor network provides weather data with street-level accuracy. Get precise readings 
+                            for your exact location using machine learning algorithms that process data from multiple sensor points 
+                            within a 100-meter radius.
+                        </p>
+                    </div>
+
+                    <!-- Feature Card 2 -->
+                    <div class="neu-card p-8 fade-in-up">
+                        <div class="flex items-center mb-4">
+                            <i data-lucide="activity" class="w-8 h-8 text-sky-500 mr-3"></i>
+                            <h3 class="text-2xl font-bold text-gray-800">Real-Time Analytics</h3>
+                        </div>
+                        <p class="text-gray-600 leading-relaxed">
+                            Experience live weather updates with sub-second precision. Our distributed sensor network continuously 
+                            monitors atmospheric conditions using advanced meteorological instruments and provides instant alerts 
+                            for weather pattern changes.
+                        </p>
+                    </div>
+
+                    <!-- Feature Card 3 -->
+                    <div class="neu-card p-8 fade-in-up">
+                        <div class="flex items-center mb-4">
+                            <i data-lucide="database" class="w-8 h-8 text-purple-500 mr-3"></i>
+                            <h3 class="text-2xl font-bold text-gray-800">Historical Climate Data</h3>
+                        </div>
+                        <p class="text-gray-600 leading-relaxed">
+                            Access comprehensive historical weather patterns spanning decades. Our climate database integrates 
+                            satellite imagery, ground-based observations, and predictive modeling to provide detailed trend 
+                            analysis and long-term forecasting capabilities.
+                        </p>
+                    </div>
+
+                    <!-- Feature Card 4 -->
+                    <div class="neu-card p-8 fade-in-up">
+                        <div class="flex items-center mb-4">
+                            <i data-lucide="bell" class="w-8 h-8 text-orange-500 mr-3"></i>
+                            <h3 class="text-2xl font-bold text-gray-800">AI-Powered Alerts</h3>
+                        </div>
+                        <p class="text-gray-600 leading-relaxed">
+                            Receive intelligent weather notifications powered by machine learning. Our AI system analyzes your 
+                            daily patterns, location preferences, and activity schedules to deliver personalized weather alerts 
+                            that are relevant to your specific needs.
+                        </p>
+                    </div>
+
+                    <!-- Feature Card 5 -->
+                    <div class="neu-card p-8 fade-in-up">
+                        <div class="flex items-center mb-4">
+                            <i data-lucide="smartphone" class="w-8 h-8 text-emerald-500 mr-3"></i>
+                            <h3 class="text-2xl font-bold text-gray-800">Multi-Platform Access</h3>
+                        </div>
+                        <p class="text-gray-600 leading-relaxed">
+                            Access comprehensive weather data across all devices with our responsive web platform and native mobile 
+                            applications. Seamlessly sync your preferences and data across iOS, Android, and web platforms with 
+                            real-time synchronization.
+                        </p>
+                    </div>
+
+                    <!-- Feature Card 6 -->
+                    <div class="neu-card p-8 fade-in-up">
+                        <div class="flex items-center mb-4">
+                            <i data-lucide="zap" class="w-8 h-8 text-yellow-500 mr-3"></i>
+                            <h3 class="text-2xl font-bold text-gray-800">Enterprise Performance</h3>
+                        </div>
+                        <p class="text-gray-600 leading-relaxed">
+                            Built on cloud-native architecture with global CDN distribution for sub-100ms response times worldwide. 
+                            Our infrastructure processes over 10 million data points per second with 99.99% uptime guarantee and 
+                            enterprise-grade security protocols.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-gray-900 text-white py-12">
+            <div class="container mx-auto px-6">
+                <div class="text-center">
+                    <div class="logo-container justify-center mb-4 relative transform-none">
+                        <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Cloud Base -->
+                            <path d="M25 60 C15 60, 10 50, 15 45 C15 35, 25 30, 35 35 C40 25, 55 25, 60 35 C70 30, 80 35, 80 45 C85 50, 80 60, 70 60 Z" 
+                                  fill="url(#cloudGradientFooter)" stroke="none"/>
+                            
+                            <!-- Circuit Pattern -->
+                            <g stroke="#10b981" stroke-width="2" fill="none">
+                                <path d="M30 45 L40 45 M45 40 L45 50 M50 45 L65 45"/>
+                                <circle cx="40" cy="45" r="2" fill="#10b981"/>
+                                <circle cx="50" cy="45" r="2" fill="#0ea5e9"/>
+                                <circle cx="65" cy="45" r="2" fill="#10b981"/>
+                            </g>
+                            
+                            <!-- Digital Heartbeat -->
+                            <path d="M20 70 L25 70 L30 55 L35 75 L40 60 L45 70 L80 70" 
+                                  stroke="#0ea5e9" stroke-width="3" fill="none"/>
+                            
+                            <!-- Gradient Definitions -->
+                            <defs>
+                                <linearGradient id="cloudGradientFooter" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#374151;stop-opacity:0.8" />
+                                    <stop offset="100%" style="stop-color:#4b5563;stop-opacity:0.8" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <span class="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-sky-400 bg-clip-text text-transparent">
+                            AtmoSense
+                        </span>
+                    </div>
+                    
+                    <p class="text-gray-400 mb-6 max-w-2xl mx-auto">
+                        Advanced Weather Monitoring System - Providing hyperlocal atmospheric data with cutting-edge technology and professional-grade accuracy.
+                    </p>
+                    
+                    <div class="flex justify-center space-x-6 mb-6">
+                        <a href="#" class="text-gray-400 hover:text-emerald-400 transition-colors">
+                            <i data-lucide="twitter" class="w-6 h-6"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-emerald-400 transition-colors">
+                            <i data-lucide="github" class="w-6 h-6"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-emerald-400 transition-colors">
+                            <i data-lucide="linkedin" class="w-6 h-6"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-emerald-400 transition-colors">
+                            <i data-lucide="mail" class="w-6 h-6"></i>
+                        </a>
+                    </div>
+                    
+                    <p class="text-gray-500 text-sm">
+                        © <span id="current-year">2025</span> AtmoSense. All rights reserved.
+                    </p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+        
+        // Dynamic Copyright Year
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+        
+        // Enhanced Parallax Effect for Video
+        function updateParallax() {
+            const scrolled = window.pageYOffset;
+            const heroVideo = document.querySelector('.hero-video');
+            const heroOverlay = document.querySelector('.hero-overlay');
+            
+            if (heroVideo && scrolled <= window.innerHeight) {
+                // Move video slower than scroll for parallax effect
+                const speed = scrolled * 0.5;
+                heroVideo.style.transform = `translateY(${speed}px)`;
+                
+                // Fade overlay as user scrolls
+                const opacity = Math.max(0, 1 - scrolled / (window.innerHeight * 0.8));
+                heroOverlay.style.opacity = opacity;
+            }
+        }
+        
+        // Scroll Animations
+        function animateOnScroll() {
+            const elements = document.querySelectorAll('.fade-in-up');
+            const windowHeight = window.innerHeight;
+            
+            elements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                
+                if (elementTop < windowHeight - 100) {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }
+            });
+        }
+        
+        // Count Up Animation for Statistics
+        function animateCountUp(element, target, duration = 2000) {
+            const start = 0;
+            const startTime = performance.now();
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Easing function for smooth animation
+                const easeOutCubic = 1 - Math.pow(1 - progress, 3);
+                const current = Math.floor(start + (target - start) * easeOutCubic);
+                
+                element.textContent = current;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+        
+        // Temperature Color Logic
+        function updateTemperatureColor(temp) {
+            const tempElement = document.getElementById('temp-value');
+            tempElement.classList.remove('temp-cold', 'temp-normal', 'temp-hot');
+            
+            if (temp < 15) {
+                tempElement.classList.add('temp-cold');
+            } else if (temp >= 15 && temp <= 29) {
+                tempElement.classList.add('temp-normal');
+            } else {
+                tempElement.classList.add('temp-hot');
+            }
+        }
+        
+        // Simulate Realistic Weather Data
+       // Fetch real-time data from Flask backend
+// Fetch real-time data from Flask backend
+async function updateWeatherData() {
+    try {
+        const res = await fetch("/api/current-data");
+        const json = await res.json();
+
+        if (!json.success) {
+            console.error("Backend error:", json.data.status);
+            return;
+        }
+
+        const data = json.data;
+        const temperature = Math.round(data.temperature);
+        const humidity = Math.round(data.humidity);
+        const airQuality = Math.round(data.gas_level);
+
+        // Update values in UI
+        document.getElementById('temp-value').textContent = temperature;
+        updateTemperatureColor(temperature);
+
+        document.getElementById('humidity-value').textContent = humidity;
+        document.getElementById('air-quality-value').textContent = airQuality;
+
+        // ✅ Update condition value
+        if (data.ml_prediction) {
+            document.getElementById('condition-value').textContent =
+                `${data.ml_prediction.condition} (${(data.ml_prediction.confidence*100).toFixed(1)}%)`;
+        } else {
+            document.getElementById('condition-value').textContent = "Normal";
+        }
+
+    } catch (err) {
+        console.error("Fetch error:", err);
+        document.getElementById('condition-value').textContent = "Error";
+    }
+}
+
+
+        // Initialize statistics animation
+        let statsAnimated = false;
+        function initStatsAnimation() {
+            const statsSection = document.getElementById('stats');
+            const rect = statsSection.getBoundingClientRect();
+            
+            if (!statsAnimated && rect.top < window.innerHeight && rect.bottom > 0) {
+                statsAnimated = true;
+                
+                // Animate temperature
+                const tempValue = parseInt(document.getElementById('temp-value').textContent);
+                animateCountUp(document.getElementById('temp-value'), tempValue);
+                updateTemperatureColor(tempValue);
+                
+                // Animate humidity
+                const humidityValue = parseInt(document.getElementById('humidity-value').textContent);
+                animateCountUp(document.getElementById('humidity-value'), humidityValue);
+                
+                // Animate air quality
+                const airQualityValue = parseInt(document.getElementById('air-quality-value').textContent);
+                animateCountUp(document.getElementById('air-quality-value'), airQualityValue);
+            }
+        }
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Performance optimization for scroll events
+        let ticking = false;
+        function optimizedScrollHandler() {
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    updateParallax();
+                    animateOnScroll();
+                    initStatsAnimation();
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        }
+        
+        // Event Listeners
+        window.addEventListener('scroll', optimizedScrollHandler, { passive: true });
+        window.addEventListener('resize', updateParallax);
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            animateOnScroll();
+            updateWeatherData();
+            
+            // Update weather data every 15 seconds for realistic simulation
+            setInterval(updateWeatherData, 15000);
+        });
+        
+        // Neumorphic button press effect
+        document.querySelectorAll('.neu-button').forEach(button => {
+            button.addEventListener('mousedown', function() {
+                this.style.transform = 'translateY(2px)';
+                this.style.boxShadow = `
+                    4px 4px 8px rgba(209, 213, 219, 0.8),
+                    -4px -4px 8px rgba(255, 255, 255, 0.7)
+                `;
+            });
+            
+            button.addEventListener('mouseup', function() {
+                this.style.transform = '';
+                this.style.boxShadow = '';
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+                this.style.boxShadow = '';
+            });
+        });
+    </script>
+    <script src="/static/atmosense-integration.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+<script>
+  lucide.createIcons();
+</script>
+
+</body>
+
+</html>
