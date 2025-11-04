@@ -23,5 +23,7 @@ The project features a responsive web application for data visualization and a d
 * **Backend & ML:** Python, Flask, Scikit-learn (RandomForestClassifier)
 * **Frontend:** HTML, CSS, JavaScript
 * **Alerting:** smtplib (Python for email notifications)
+![Dashboard](https://github.com/devray11/Weather-Prediction-System/blob/a786df20c4698202326139631538938e9b90f364/Dashboard.png)
 
 ![Weather Prediction System Images](https://github.com/devray11/Weather-Prediction-System/blob/a786df20c4698202326139631538938e9b90f364/Weather-Prediction-System-Images.png)
+
